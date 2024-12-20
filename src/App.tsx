@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { HStack } from '@chakra-ui/react';
+import { Heading, HStack } from '@chakra-ui/react';
 
 function App() {
   return (
     <>
-      <div data-testid="title">タイトル</div>
+      <Heading as="h1" textAlign="left" bg="teal.500" p={4} data-testid="title">
+        学習記録アプリ
+      </Heading>
       <HStack>
         <Button>Click me</Button>
         <Button>Click me</Button>
