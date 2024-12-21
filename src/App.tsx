@@ -1,15 +1,27 @@
 import { useEffect, useState } from 'react';
 import { MdEdit, MdDeleteOutline } from 'react-icons/md';
-import { Center, Container, Heading, Spinner, Table } from '@chakra-ui/react';
+import { FiPlusCircle } from 'react-icons/fi';
+import { Box, Center, Container, Flex, Heading, IconButton, Spinner, Table } from '@chakra-ui/react';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
 import { getAllRecords } from '@/utils/supabaseFunctions';
+import {
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 function App() {
   const [records, setRecords] = useState<Record[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const { showMessage } = useMessage();
 
   useEffect(() => {
@@ -26,19 +38,39 @@ function App() {
       });
   }, []);
 
+  const onClickRegist = () => {
+    setOpen(true);
+  };
   return (
     <>
       <Toaster />
-      <Heading as="h1" textAlign="left" bg="teal.500" py="4" data-testid="title" color="gray.100">
-        <Container>学習記録アプリ</Container>
-      </Heading>
+
+      <Box bg="teal.500" py="4" data-testid="title" color="gray.100">
+        <Container maxW="6xl">
+          <Flex justify="space-between" align="center">
+            <Heading as="h1" textAlign="left">
+              学習記録アプリ
+            </Heading>
+            <IconButton
+              aria-label="Search database"
+              variant="ghost"
+              size="lg"
+              color="white"
+              _hover={{ bg: 'teal.500', color: 'gray.200' }}
+              onClick={onClickRegist}
+            >
+              <FiPlusCircle />
+            </IconButton>
+          </Flex>
+        </Container>
+      </Box>
 
       {isLoading ? (
         <Center h="100vh">
           <Spinner />
         </Center>
       ) : (
-        <Container>
+        <Container maxW="6xl">
           <Table.Root size="md" variant="line" my={10}>
             <Table.Header>
               <Table.Row>
@@ -68,6 +100,18 @@ function App() {
           </Table.Root>
         </Container>
       )}
+
+      <DialogRoot lazyMount open={open} onOpenChange={(e) => setOpen(e.open)} motionPreset="slide-in-bottom" trapFocus={false}>
+        <DialogTrigger />
+        <DialogContent>
+          <DialogCloseTrigger />
+          <DialogHeader>
+            <DialogTitle>学習記録登録</DialogTitle>
+          </DialogHeader>
+          <DialogBody>登録内容</DialogBody>
+          <DialogFooter />
+        </DialogContent>
+      </DialogRoot>
     </>
   );
 }
