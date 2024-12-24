@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { MdEdit, MdDeleteOutline } from 'react-icons/md';
 import { FiPlusCircle } from 'react-icons/fi';
 import { Box, Center, Container, Flex, Heading, IconButton, Input, Spinner, Stack, Table } from '@chakra-ui/react';
@@ -23,20 +24,26 @@ import {
 
 function App() {
   const [records, setRecords] = useState<Record[]>([]);
-  const [title, setTitle] = useState('');
-  const [time, setTime] = useState('0');
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [open, setOpen] = useState(false);
   const { showMessage } = useMessage();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Record>({
+    defaultValues: {
+      title: '',
+      time: '0',
+    },
+  });
 
   useEffect(() => {
     getAllRecords();
   }, []);
 
   const onClickOpenModal = () => {
-    setTitle('');
-    setTime('0');
     setOpen(true);
   };
 
@@ -54,9 +61,9 @@ function App() {
       });
   };
 
-  const onClickCreate = (record: Record) => {
+  const onSubmit = handleSubmit((data: Record) => {
     setIsCreating(true);
-    insertRecord(record)
+    insertRecord(data)
       .then(() => {
         showMessage({ title: '学習記録の登録が完了しました', type: 'success' });
       })
@@ -68,11 +75,7 @@ function App() {
         setOpen(false);
         getAllRecords();
       });
-  };
-
-  const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
+  });
 
   return (
     <>
@@ -141,26 +144,45 @@ function App() {
           <DialogHeader>
             <DialogTitle>学習記録登録</DialogTitle>
           </DialogHeader>
-          <DialogBody mx={4}>
-            <Stack gap={4}>
-              <Field label="学習内容" required>
-                <Input value={title} onChange={onChangeTitle} />
-              </Field>
-              <Field label="学習時間" required>
-                <NumberInputRoot min={0} width="100%" value={time} onValueChange={(e) => setTime(e.value)}>
-                  <NumberInputField />
-                </NumberInputRoot>
-              </Field>
-            </Stack>
-          </DialogBody>
-          <DialogFooter mb="2">
-            <DialogActionTrigger asChild>
-              <Button variant="outline">キャンセル</Button>
-            </DialogActionTrigger>
-            <Button colorPalette="teal" loading={isCreating} onClick={() => onClickCreate({ title, time })}>
-              登録
-            </Button>
-          </DialogFooter>
+          <form onSubmit={onSubmit}>
+            <DialogBody mx={4}>
+              <Stack gap={4}>
+                <Field label="学習内容" invalid={!!errors.title} errorText={errors.title?.message}>
+                  <Controller
+                    name="title"
+                    control={control}
+                    rules={{
+                      required: '内容の入力は必須です',
+                    }}
+                    render={({ field }) => <Input {...field} />}
+                  />
+                </Field>
+                <Field label="学習時間" invalid={!!errors.time} errorText={errors.time?.message}>
+                  <Controller
+                    name="time"
+                    control={control}
+                    rules={{
+                      required: '時間の入力は必須です',
+                      min: { value: 0, message: '時間は0以上である必要があります' },
+                    }}
+                    render={({ field }) => (
+                      <NumberInputRoot width="100%" name={field.name} value={field.value} onValueChange={({ value }) => field.onChange(value)}>
+                        <NumberInputField />
+                      </NumberInputRoot>
+                    )}
+                  />
+                </Field>
+              </Stack>
+            </DialogBody>
+            <DialogFooter mb="2">
+              <DialogActionTrigger asChild>
+                <Button variant="outline">キャンセル</Button>
+              </DialogActionTrigger>
+              <Button colorPalette="teal" loading={isCreating} type="submit">
+                登録
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </DialogRoot>
     </>
