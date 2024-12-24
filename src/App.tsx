@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { MdEdit, MdDeleteOutline } from 'react-icons/md';
 import { FiPlusCircle } from 'react-icons/fi';
-import { Box, Center, Container, Flex, Heading, IconButton, Spinner, Table } from '@chakra-ui/react';
+import { Box, Center, Container, Flex, Heading, IconButton, Input, Spinner, Stack, Table } from '@chakra-ui/react';
 import { Button } from '@/components/ui/button';
+import { Field } from '@/components/ui/field';
+import { NumberInputField, NumberInputRoot } from '@/components/ui/number-input';
 import { Toaster } from '@/components/ui/toaster';
 import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
@@ -109,12 +111,23 @@ function App() {
           <DialogHeader>
             <DialogTitle>学習記録登録</DialogTitle>
           </DialogHeader>
-          <DialogBody>登録内容</DialogBody>
-          <DialogFooter>
+          <DialogBody mx={4}>
+            <Stack gap={4}>
+              <Field label="学習内容" required>
+                <Input />
+              </Field>
+              <Field label="学習内容" required>
+                <NumberInputRoot min={0} width="100%">
+                  <NumberInputField />
+                </NumberInputRoot>
+              </Field>
+            </Stack>
+          </DialogBody>
+          <DialogFooter mb="2">
             <DialogActionTrigger asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">キャンセル</Button>
             </DialogActionTrigger>
-            <Button>Save</Button>
+            <Button bg="teal.500">登録</Button>
           </DialogFooter>
         </DialogContent>
       </DialogRoot>
