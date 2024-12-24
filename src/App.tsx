@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { MdEdit, MdDeleteOutline } from 'react-icons/md';
 import { FiPlusCircle } from 'react-icons/fi';
 import { Box, Center, Container, Flex, Heading, IconButton, Input, Spinner, Stack, Table } from '@chakra-ui/react';
@@ -8,7 +8,7 @@ import { NumberInputField, NumberInputRoot } from '@/components/ui/number-input'
 import { Toaster } from '@/components/ui/toaster';
 import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
-import { getAllRecords } from '@/utils/supabaseFunctions';
+import { fetchAllRecords, insertRecord } from '@/utils/supabaseFunctions';
 import {
   DialogActionTrigger,
   DialogBody,
@@ -23,13 +23,26 @@ import {
 
 function App() {
   const [records, setRecords] = useState<Record[]>([]);
+  const [title, setTitle] = useState('');
+  const [time, setTime] = useState('0');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [open, setOpen] = useState(false);
   const { showMessage } = useMessage();
 
   useEffect(() => {
+    getAllRecords();
+  }, []);
+
+  const onClickOpenModal = () => {
+    setTitle('');
+    setTime('0');
+    setOpen(true);
+  };
+
+  const getAllRecords = () => {
     setIsLoading(true);
-    getAllRecords()
+    fetchAllRecords()
       .then((data) => {
         setRecords(data);
       })
@@ -39,11 +52,28 @@ function App() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
-
-  const onClickRegist = () => {
-    setOpen(true);
   };
+
+  const onClickCreate = (record: Record) => {
+    setIsCreating(true);
+    insertRecord(record)
+      .then(() => {
+        showMessage({ title: '学習記録の登録が完了しました', type: 'success' });
+      })
+      .catch(() => {
+        showMessage({ title: '学習記録の登録に失敗しました', type: 'error' });
+      })
+      .finally(() => {
+        setIsCreating(false);
+        setOpen(false);
+        getAllRecords();
+      });
+  };
+
+  const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
   return (
     <>
       <Toaster />
@@ -60,7 +90,7 @@ function App() {
               size="lg"
               color="white"
               _hover={{ bg: 'teal.500', color: 'gray.200' }}
-              onClick={onClickRegist}
+              onClick={onClickOpenModal}
             >
               <FiPlusCircle />
             </IconButton>
@@ -114,10 +144,10 @@ function App() {
           <DialogBody mx={4}>
             <Stack gap={4}>
               <Field label="学習内容" required>
-                <Input />
+                <Input value={title} onChange={onChangeTitle} />
               </Field>
-              <Field label="学習内容" required>
-                <NumberInputRoot min={0} width="100%">
+              <Field label="学習時間" required>
+                <NumberInputRoot min={0} width="100%" value={time} onValueChange={(e) => setTime(e.value)}>
                   <NumberInputField />
                 </NumberInputRoot>
               </Field>
@@ -127,7 +157,9 @@ function App() {
             <DialogActionTrigger asChild>
               <Button variant="outline">キャンセル</Button>
             </DialogActionTrigger>
-            <Button bg="teal.500">登録</Button>
+            <Button colorPalette="teal" loading={isCreating} onClick={() => onClickCreate({ title, time })}>
+              登録
+            </Button>
           </DialogFooter>
         </DialogContent>
       </DialogRoot>
