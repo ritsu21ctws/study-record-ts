@@ -8,6 +8,7 @@ import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
 import { getAllRecords } from '@/utils/supabaseFunctions';
 import {
+  DialogActionTrigger,
   DialogBody,
   DialogCloseTrigger,
   DialogContent,
@@ -109,7 +110,12 @@ function App() {
             <DialogTitle>学習記録登録</DialogTitle>
           </DialogHeader>
           <DialogBody>登録内容</DialogBody>
-          <DialogFooter />
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogActionTrigger>
+            <Button>Save</Button>
+          </DialogFooter>
         </DialogContent>
       </DialogRoot>
     </>
