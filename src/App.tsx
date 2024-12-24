@@ -31,6 +31,7 @@ function App() {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Record>({
     defaultValues: {
@@ -72,6 +73,7 @@ function App() {
       })
       .finally(() => {
         setIsCreating(false);
+        reset(); // 登録フォームの初期化
         setOpen(false);
         getAllRecords();
       });
