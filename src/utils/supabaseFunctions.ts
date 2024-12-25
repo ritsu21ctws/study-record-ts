@@ -9,8 +9,15 @@ export const fetchAllRecords = async (): Promise<Record[]> => {
   return data;
 };
 
-export const insertRecord = async (record: Record): Promise<void> => {
+export const insertRecord = async (record: Omit<Record, 'id'>): Promise<void> => {
   const { error } = await supabase.from('study-record').insert(record);
+  if (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const deleteRecord = async (id: string): Promise<void> => {
+  const { error } = await supabase.from('study-record').delete().eq('id', id);
   if (error) {
     throw new Error(error.message);
   }

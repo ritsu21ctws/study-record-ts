@@ -9,7 +9,7 @@ import { NumberInputField, NumberInputRoot } from '@/components/ui/number-input'
 import { Toaster } from '@/components/ui/toaster';
 import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
-import { fetchAllRecords, insertRecord } from '@/utils/supabaseFunctions';
+import { fetchAllRecords, insertRecord, deleteRecord } from '@/utils/supabaseFunctions';
 import {
   DialogActionTrigger,
   DialogBody,
@@ -19,14 +19,16 @@ import {
   DialogHeader,
   DialogRoot,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 function App() {
   const [records, setRecords] = useState<Record[]>([]);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const { showMessage } = useMessage();
   const {
     control,
@@ -79,6 +81,37 @@ function App() {
       });
   });
 
+  const onClickDeleteConfirm = (id: string) => {
+    setDeleteTargetId(id);
+    setOpenConfirm(true);
+  };
+
+  const onClickDelete = () => {
+    setIsDeleting(true);
+
+    if (typeof deleteTargetId === 'undefined') {
+      showMessage({ title: '削除対象のデータが見つかりません', type: 'error' });
+      setIsDeleting(false);
+      setOpenConfirm(false);
+      setDeleteTargetId(undefined);
+      return;
+    }
+
+    deleteRecord(deleteTargetId)
+      .then(() => {
+        showMessage({ title: '学習記録の削除が完了しました', type: 'success' });
+      })
+      .catch(() => {
+        showMessage({ title: '学習記録の削除に失敗しました', type: 'error' });
+      })
+      .finally(() => {
+        setIsDeleting(false);
+        setOpenConfirm(false);
+        setDeleteTargetId(undefined);
+        getAllRecords();
+      });
+  };
+
   return (
     <>
       <Toaster />
@@ -109,7 +142,7 @@ function App() {
         </Center>
       ) : (
         <Container maxW="6xl">
-          <Table.Root size="md" variant="line" my={10}>
+          <Table.Root size="md" variant="line" my={10} interactive>
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader>タイトル</Table.ColumnHeader>
@@ -127,7 +160,7 @@ function App() {
                       <MdEdit />
                       編集
                     </Button>
-                    <Button colorPalette="red" variant="outline">
+                    <Button colorPalette="red" variant="outline" onClick={() => onClickDeleteConfirm(record.id)}>
                       <MdDeleteOutline />
                       削除
                     </Button>
@@ -140,14 +173,13 @@ function App() {
       )}
 
       <DialogRoot lazyMount open={open} onOpenChange={(e) => setOpen(e.open)} motionPreset="slide-in-bottom" trapFocus={false}>
-        <DialogTrigger />
         <DialogContent>
           <DialogCloseTrigger />
           <DialogHeader>
             <DialogTitle>学習記録登録</DialogTitle>
           </DialogHeader>
           <form onSubmit={onSubmit}>
-            <DialogBody mx={4}>
+            <DialogBody>
               <Stack gap={4}>
                 <Field label="学習内容" invalid={!!errors.title} errorText={errors.title?.message}>
                   <Controller
@@ -185,6 +217,33 @@ function App() {
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </DialogRoot>
+
+      <DialogRoot
+        role="alertdialog"
+        lazyMount
+        open={openConfirm}
+        onOpenChange={(e) => setOpenConfirm(e.open)}
+        motionPreset="slide-in-bottom"
+        trapFocus={false}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>削除の確認</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <p>削除したデータは戻せません。削除してもよろしいですか？</p>
+          </DialogBody>
+          <DialogFooter mb="2">
+            <DialogActionTrigger asChild>
+              <Button variant="outline">キャンセル</Button>
+            </DialogActionTrigger>
+            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete}>
+              削除
+            </Button>
+          </DialogFooter>
+          <DialogCloseTrigger />
         </DialogContent>
       </DialogRoot>
     </>

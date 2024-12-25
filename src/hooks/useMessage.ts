@@ -12,7 +12,7 @@ export const useMessage = () => {
     toaster.create({
       title,
       type,
-      duration: 4000,
+      duration: 3000,
       meta: { closable: true },
     });
   }, []);
