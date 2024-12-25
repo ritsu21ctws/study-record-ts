@@ -7,8 +7,8 @@ type Props = {
 };
 
 export const useMessage = () => {
-  const showMessage = useCallback((prpps: Props) => {
-    const { title, type } = prpps;
+  const showMessage = useCallback((props: Props) => {
+    const { title, type } = props;
     toaster.create({
       title,
       type,
