@@ -7,18 +7,24 @@ interface DialogContentProps extends ChakraDialog.ContentProps {
   portalRef?: React.RefObject<HTMLElement>;
   backdrop?: boolean;
   children?: React.ReactNode;
+  asChild?: boolean;
+  ref?: React.ForwardedRef<HTMLDivElement>;
 }
 
 export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent(props, ref) {
   const { children, portalled = true, portalRef, backdrop = true, ...rest } = props;
 
+  const chakraDialogContentProps: DialogContentProps = {
+    ref: ref,
+    asChild: false,
+    children: children,
+  };
+
   return (
     <Portal disabled={!portalled} container={portalRef}>
       {backdrop && <ChakraDialog.Backdrop />}
       <ChakraDialog.Positioner>
-        <ChakraDialog.Content ref={ref} {...rest} asChild={false}>
-          {children}
-        </ChakraDialog.Content>
+        <ChakraDialog.Content {...rest} {...chakraDialogContentProps} />
       </ChakraDialog.Positioner>
     </Portal>
   );
