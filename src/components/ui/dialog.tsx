@@ -11,6 +11,10 @@ interface DialogContentProps extends ChakraDialog.ContentProps {
   ref?: React.ForwardedRef<HTMLDivElement>;
 }
 
+interface NewDialogCloseTriggerProps extends DialogCloseTriggerProps {
+  children?: React.ReactNode;
+}
+
 export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent(props, ref) {
   const { children, portalled = true, portalRef, backdrop = true, ...rest } = props;
   const chakraDialogContentProps: DialogContentProps = {
@@ -29,7 +33,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
   );
 });
 
-export const DialogCloseTrigger = React.forwardRef<HTMLButtonElement, ChakraDialog.CloseTriggerProps>(function DialogCloseTrigger(props, ref) {
+export const DialogCloseTrigger = React.forwardRef<HTMLButtonElement, NewDialogCloseTriggerProps>(function DialogCloseTrigger(props, ref) {
   const chakraDialogCloseTriggerProps: DialogCloseTriggerProps = {
     asChild: true,
     position: 'absolute',
