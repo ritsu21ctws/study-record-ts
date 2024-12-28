@@ -116,10 +116,10 @@ function App() {
     <>
       <Toaster />
 
-      <Box bg="teal.500" py="4" data-testid="title" color="gray.100">
+      <Box bg="teal.500" py="4" color="gray.100">
         <Container maxW="6xl">
           <Flex justify="space-between" align="center">
-            <Heading as="h1" textAlign="left">
+            <Heading as="h1" textAlign="left" data-testid="title">
               学習記録アプリ
             </Heading>
             <IconButton

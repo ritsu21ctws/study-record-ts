@@ -25,4 +25,9 @@ describe('App', () => {
     const createButton = screen.getByTestId('create-button');
     expect(createButton).toBeInTheDocument();
   });
+
+  test('タイトルが表示されること', async () => {
+    const title = screen.getByTestId('title');
+    expect(title).toBeInTheDocument();
+  });
 });
