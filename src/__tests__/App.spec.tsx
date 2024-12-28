@@ -52,4 +52,23 @@ describe('App', () => {
     const modalTitle = screen.getByText('新規登録');
     expect(modalTitle).toBeInTheDocument();
   });
+
+  test('学習内容がないときに登録するとエラーがでる', async () => {
+    const beforeLists = await screen.findAllByRole('row');
+
+    await userEvent.click(screen.getByTestId('create-button'));
+    await userEvent.click(screen.getByTestId('create-submit-button'));
+
+    await waitFor(() => {
+      const errorMessage = screen.getByText('内容の入力は必須です');
+      expect(errorMessage).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByTestId('create-cancel-button'));
+
+    await waitFor(() => {
+      const afterLists = screen.getAllByRole('row');
+      expect(afterLists).toHaveLength(beforeLists.length);
+    });
+  });
 });

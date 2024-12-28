@@ -211,7 +211,9 @@ function App() {
             </DialogBody>
             <DialogFooter mb="2">
               <DialogActionTrigger asChild>
-                <Button variant="outline">キャンセル</Button>
+                <Button variant="outline" data-testid="create-cancel-button">
+                  キャンセル
+                </Button>
               </DialogActionTrigger>
               <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="create-submit-button">
                 登録
