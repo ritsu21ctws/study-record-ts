@@ -3,13 +3,16 @@ import { render, screen } from '@testing-library/react';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 
 describe('App', () => {
-  test('タイトルがあること', async () => {
+  beforeEach(() => {
     render(
       <ChakraProvider value={defaultSystem}>
         <App />
       </ChakraProvider>
     );
-    const title = screen.getByTestId('title');
-    expect(title).toBeInTheDocument();
+  });
+
+  test('ローディング画面が表示されること', async () => {
+    const loading = screen.getByTestId('loading');
+    expect(loading).toBeInTheDocument();
   });
 });

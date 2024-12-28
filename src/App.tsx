@@ -138,7 +138,7 @@ function App() {
 
       {isLoading ? (
         <Center h="100vh">
-          <Spinner />
+          <Spinner data-testid="loading" />
         </Center>
       ) : (
         <Container maxW="6xl">
