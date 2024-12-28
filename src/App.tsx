@@ -142,7 +142,7 @@ function App() {
         </Center>
       ) : (
         <Container maxW="6xl">
-          <Table.Root size="md" variant="line" my={10} interactive>
+          <Table.Root size="md" variant="line" my={10} interactive data-testid="study-record-list">
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader>タイトル</Table.ColumnHeader>

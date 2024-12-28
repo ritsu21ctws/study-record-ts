@@ -15,4 +15,9 @@ describe('App', () => {
     const loading = screen.getByTestId('loading');
     expect(loading).toBeInTheDocument();
   });
+
+  test('学習記録一覧のテーブルが表示されること', async () => {
+    const studyRecordList = await screen.findByTestId('study-record-list');
+    expect(studyRecordList).toBeInTheDocument();
+  });
 });
