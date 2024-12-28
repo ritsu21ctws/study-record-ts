@@ -177,7 +177,7 @@ function App() {
         <DialogContent>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>学習記録登録</DialogTitle>
+            <DialogTitle>新規登録</DialogTitle>
           </DialogHeader>
           <form onSubmit={onSubmit}>
             <DialogBody>

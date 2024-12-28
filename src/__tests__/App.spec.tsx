@@ -45,4 +45,11 @@ describe('App', () => {
       expect(afterLists).toHaveLength(beforeLists.length + 1);
     });
   });
+
+  test('新規登録モーダルのタイトルが「新規登録」になっていること', async () => {
+    await userEvent.click(screen.getByTestId('create-button'));
+
+    const modalTitle = screen.getByText('新規登録');
+    expect(modalTitle).toBeInTheDocument();
+  });
 });
