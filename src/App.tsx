@@ -189,7 +189,7 @@ function App() {
                     rules={{
                       required: '内容の入力は必須です',
                     }}
-                    render={({ field }) => <Input {...field} />}
+                    render={({ field }) => <Input {...field} data-testid="input-title" />}
                   />
                 </Field>
                 <Field label="学習時間" invalid={!!errors.time} errorText={errors.time?.message}>
@@ -202,7 +202,7 @@ function App() {
                     }}
                     render={({ field }) => (
                       <NumberInputRoot width="100%" name={field.name} value={field.value} onValueChange={({ value }) => field.onChange(value)}>
-                        <NumberInputField />
+                        <NumberInputField data-testid="input-time" />
                       </NumberInputRoot>
                     )}
                   />
@@ -213,7 +213,7 @@ function App() {
               <DialogActionTrigger asChild>
                 <Button variant="outline">キャンセル</Button>
               </DialogActionTrigger>
-              <Button colorPalette="teal" loading={isCreating} type="submit">
+              <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="create-submit-button">
                 登録
               </Button>
             </DialogFooter>
