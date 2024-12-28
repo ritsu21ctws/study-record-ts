@@ -129,6 +129,7 @@ function App() {
               color="white"
               _hover={{ bg: 'teal.500', color: 'gray.200' }}
               onClick={onClickOpenModal}
+              data-testid="create-button"
             >
               <FiPlusCircle />
             </IconButton>

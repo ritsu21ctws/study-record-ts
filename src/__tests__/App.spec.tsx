@@ -20,4 +20,9 @@ describe('App', () => {
     const studyRecordList = await screen.findByTestId('study-record-list');
     expect(studyRecordList).toBeInTheDocument();
   });
+
+  test('新規登録ボタンが表示されること', async () => {
+    const createButton = screen.getByTestId('create-button');
+    expect(createButton).toBeInTheDocument();
+  });
 });
