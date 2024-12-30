@@ -13,6 +13,27 @@ describe('App', () => {
     );
   });
 
+  const mockFetchAllRecords = jest
+    .fn()
+    .mockResolvedValue([
+      new Record('1', 'Sample Record 1', '2024-12-30T12:00:00Z'),
+      new Record('2', 'Sample Record 2', '2024-12-30T14:30:00Z'),
+      new Record('3', 'Sample Record 3', '2024-12-30T16:45:00Z'),
+      new Record('4', 'Sample Record 4', '2024-12-31T08:00:00Z'),
+    ]);
+
+  const mockInsertRecord = jest.fn(() => Promise.resolve());
+
+  const mockDeleteRecord = jest.fn(() => Promise.resolve());
+
+  jest.mock('@/utils/supabaseFunctions', () => {
+    return {
+      fetchAllRecords: () => mockFetchAllRecords(),
+      insertRecord: () => mockInsertRecord(),
+      deleteRecord: () => mockDeleteRecord(),
+    };
+  });
+
   test('ローディング画面が表示されること', async () => {
     const loading = screen.getByTestId('loading');
     expect(loading).toBeInTheDocument();
