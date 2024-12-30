@@ -53,7 +53,7 @@ describe('App', () => {
     expect(modalTitle).toBeInTheDocument();
   });
 
-  test('学習内容がないときに登録するとエラーがでる', async () => {
+  test('学習内容が未入力で登録するとエラーが表示され、登録がされないこと', async () => {
     const beforeLists = await screen.findAllByRole('row');
 
     await userEvent.click(screen.getByTestId('create-button'));
@@ -61,6 +61,27 @@ describe('App', () => {
 
     await waitFor(() => {
       const errorMessage = screen.getByText('内容の入力は必須です');
+      expect(errorMessage).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByTestId('create-cancel-button'));
+
+    await waitFor(() => {
+      const afterLists = screen.getAllByRole('row');
+      expect(afterLists).toHaveLength(beforeLists.length);
+    });
+  });
+
+  test('学習時間が未入力で登録するとエラーが表示され、登録がされないこと', async () => {
+    const beforeLists = await screen.findAllByRole('row');
+
+    await userEvent.click(screen.getByTestId('create-button'));
+    await userEvent.type(screen.getByTestId('input-title'), 'テスト記録');
+    await userEvent.clear(screen.getByTestId('input-time'));
+    await userEvent.click(screen.getByTestId('create-submit-button'));
+
+    await waitFor(() => {
+      const errorMessage = screen.getByText('時間の入力は必須です');
       expect(errorMessage).toBeInTheDocument();
     });
 
