@@ -242,7 +242,7 @@ function App() {
             <DialogActionTrigger asChild>
               <Button variant="outline">キャンセル</Button>
             </DialogActionTrigger>
-            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete}>
+            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete} data-testid="delete-submit-button">
               削除
             </Button>
           </DialogFooter>
