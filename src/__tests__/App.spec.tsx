@@ -92,4 +92,29 @@ describe('App', () => {
       expect(afterLists).toHaveLength(beforeLists.length);
     });
   });
+
+  test('学習時間が0未満で登録するとエラーが表示され、登録がされないこと', async () => {
+    const beforeLists = await screen.findAllByRole('row');
+
+    await userEvent.click(screen.getByTestId('create-button'));
+
+    await userEvent.type(screen.getByTestId('input-title'), 'テスト記録');
+    const timeInput = screen.getByTestId('input-time');
+    await userEvent.clear(timeInput);
+    await userEvent.type(timeInput, '-1');
+
+    await userEvent.click(screen.getByTestId('create-submit-button'));
+
+    await waitFor(() => {
+      const errorMessage = screen.getByText('時間は0以上である必要があります');
+      expect(errorMessage).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByTestId('create-cancel-button'));
+
+    await waitFor(() => {
+      const afterLists = screen.getAllByRole('row');
+      expect(afterLists).toHaveLength(beforeLists.length);
+    });
+  });
 });
