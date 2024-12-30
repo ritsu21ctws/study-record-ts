@@ -127,7 +127,7 @@ describe('App', () => {
   });
 });
 
-describe('モックのテスト（データ登録）', () => {
+describe('データ登録', () => {
   beforeEach(() => {
     render(
       <ChakraProvider value={defaultSystem}>
@@ -179,7 +179,7 @@ describe('モックのテスト（データ登録）', () => {
   });
 });
 
-describe('モックのテスト（データ削除）', () => {
+describe('データ削除', () => {
   beforeEach(() => {
     render(
       <ChakraProvider value={defaultSystem}>
