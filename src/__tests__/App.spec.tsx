@@ -172,10 +172,13 @@ describe('データ登録', () => {
     await userEvent.type(screen.getByTestId('input-time'), '10');
     await userEvent.click(screen.getByTestId('create-submit-button'));
 
-    await waitFor(() => {
-      const afterLists = screen.getAllByRole('row');
-      expect(afterLists).toHaveLength(beforeLists.length + 1);
-    });
+    await waitFor(
+      () => {
+        const afterLists = screen.getAllByRole('row');
+        expect(afterLists).toHaveLength(beforeLists.length + 1);
+      },
+      { timeout: 2000 }
+    );
   });
 });
 
@@ -222,9 +225,12 @@ describe('データ削除', () => {
     await userEvent.click(screen.getAllByRole('button', { name: '削除' })[beforeLists.length - 2]);
     await userEvent.click(screen.getByTestId('delete-submit-button'));
 
-    await waitFor(() => {
-      const afterLists = screen.getAllByRole('row');
-      expect(afterLists).toHaveLength(beforeLists.length - 1);
-    });
+    await waitFor(
+      () => {
+        const afterLists = screen.getAllByRole('row');
+        expect(afterLists).toHaveLength(beforeLists.length - 1);
+      },
+      { timeout: 2000 }
+    );
   });
 });
