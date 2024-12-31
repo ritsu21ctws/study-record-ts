@@ -184,8 +184,8 @@ function App() {
           <Table.Root size="md" variant="line" my={10} interactive data-testid="study-record-list">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>タイトル</Table.ColumnHeader>
-                <Table.ColumnHeader>時間</Table.ColumnHeader>
+                <Table.ColumnHeader>学習内容</Table.ColumnHeader>
+                <Table.ColumnHeader>学習時間</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
