@@ -28,6 +28,7 @@ function App() {
   const [isCreating, setIsCreating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [totalTime, setTotalTime] = useState(0);
   const [open, setOpen] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const { showMessage } = useMessage();
@@ -68,9 +69,13 @@ function App() {
 
   const getAllRecords = () => {
     setIsLoading(true);
+
     fetchAllRecords()
       .then((data) => {
         setRecords(data);
+        // 合計時間の計算
+        const totalTime = data.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.time), 0);
+        setTotalTime(totalTime);
       })
       .catch(() => {
         showMessage({ title: '一覧の取得に失敗しました', type: 'error' });
@@ -203,6 +208,7 @@ function App() {
               ))}
             </Table.Body>
           </Table.Root>
+          <Box>合計時間：{totalTime} / 1000 (h)</Box>
         </Container>
       )}
 
