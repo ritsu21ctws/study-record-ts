@@ -9,7 +9,7 @@ import { NumberInputField, NumberInputRoot } from '@/components/ui/number-input'
 import { Toaster } from '@/components/ui/toaster';
 import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
-import { fetchAllRecords, insertRecord, deleteRecord } from '@/utils/supabaseFunctions';
+import { fetchAllRecords, insertRecord, updateRecord, deleteRecord } from '@/utils/supabaseFunctions';
 import {
   DialogActionTrigger,
   DialogBody,
@@ -27,7 +27,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [open, setOpen] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const { showMessage } = useMessage();
@@ -48,20 +48,21 @@ function App() {
     getAllRecords();
   }, []);
 
-  const onClickOpenModal = (isEdit: boolean, id?: string) => {
+  const onClickOpenModal = (isEditButton: boolean, id?: string) => {
     reset(); // 登録・編集フォームの初期化（発生していたバリデーションメッセージなどをクリア）
 
-    if (isEdit) {
+    if (isEditButton) {
       const record = records.find((record) => record.id === id);
       if (!record) {
         showMessage({ title: '編集対象のデータが見つかりません', type: 'error' });
         return;
       }
+      setValue('id', record.id);
       setValue('title', record.title);
       setValue('time', record.time);
     }
 
-    setIsEdit(isEdit);
+    setIsEditMode(isEditButton);
     setOpen(true);
   };
 
@@ -81,19 +82,36 @@ function App() {
 
   const onSubmit = handleSubmit((data: Record) => {
     setIsCreating(true);
-    insertRecord(data)
-      .then(() => {
-        showMessage({ title: '学習記録の登録が完了しました', type: 'success' });
-      })
-      .catch(() => {
-        showMessage({ title: '学習記録の登録に失敗しました', type: 'error' });
-      })
-      .finally(() => {
-        setIsCreating(false);
-        reset(); // 登録フォームの初期化
-        setOpen(false);
-        getAllRecords();
-      });
+
+    if (isEditMode) {
+      updateRecord(data)
+        .then(() => {
+          showMessage({ title: '学習記録の更新が完了しました', type: 'success' });
+        })
+        .catch(() => {
+          showMessage({ title: '学習記録の更新に失敗しました', type: 'error' });
+        })
+        .finally(() => {
+          setIsCreating(false);
+          reset(); // 編集フォームの初期化
+          setOpen(false);
+          getAllRecords();
+        });
+    } else {
+      insertRecord(data)
+        .then(() => {
+          showMessage({ title: '学習記録の登録が完了しました', type: 'success' });
+        })
+        .catch(() => {
+          showMessage({ title: '学習記録の登録に失敗しました', type: 'error' });
+        })
+        .finally(() => {
+          setIsCreating(false);
+          reset(); // 登録フォームの初期化
+          setOpen(false);
+          getAllRecords();
+        });
+    }
   });
 
   const onClickDeleteConfirm = (id: string) => {
@@ -192,7 +210,7 @@ function App() {
         <DialogContent>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>{isEdit ? '記録編集' : '新規登録'}</DialogTitle>
+            <DialogTitle>{isEditMode ? '記録編集' : '新規登録'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={onSubmit}>
             <DialogBody>
@@ -222,6 +240,7 @@ function App() {
                     )}
                   />
                 </Field>
+                <input type="hidden" name="id" />
               </Stack>
             </DialogBody>
             <DialogFooter mb="2">
@@ -231,15 +250,9 @@ function App() {
                 </Button>
               </DialogActionTrigger>
 
-              {isEdit ? (
-                <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="edit-submit-button">
-                  保存
-                </Button>
-              ) : (
-                <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="create-submit-button">
-                  登録
-                </Button>
-              )}
+              <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="submit-button">
+                {isEditMode ? '保存' : '登録'}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
