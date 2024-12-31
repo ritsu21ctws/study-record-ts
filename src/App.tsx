@@ -9,7 +9,7 @@ import { NumberInputField, NumberInputRoot } from '@/components/ui/number-input'
 import { Toaster } from '@/components/ui/toaster';
 import { Record } from '@/domain/record';
 import { useMessage } from '@/hooks/useMessage';
-import { fetchAllRecords, insertRecord, deleteRecord } from '@/utils/supabaseFunctions';
+import { fetchAllRecords, insertRecord, updateRecord, deleteRecord } from '@/utils/supabaseFunctions';
 import {
   DialogActionTrigger,
   DialogBody,
@@ -27,6 +27,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [totalTime, setTotalTime] = useState(0);
   const [open, setOpen] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const { showMessage } = useMessage();
@@ -35,6 +37,7 @@ function App() {
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<Record>({
     defaultValues: {
       title: '',
@@ -46,15 +49,33 @@ function App() {
     getAllRecords();
   }, []);
 
-  const onClickOpenModal = () => {
+  const onClickOpenModal = (isEditButton: boolean, id?: string) => {
+    reset(); // 登録・編集フォームの初期化（発生していたバリデーションメッセージなどをクリア）
+
+    if (isEditButton) {
+      const record = records.find((record) => record.id === id);
+      if (!record) {
+        showMessage({ title: '編集対象のデータが見つかりません', type: 'error' });
+        return;
+      }
+      setValue('id', record.id);
+      setValue('title', record.title);
+      setValue('time', record.time);
+    }
+
+    setIsEditMode(isEditButton);
     setOpen(true);
   };
 
   const getAllRecords = () => {
     setIsLoading(true);
+
     fetchAllRecords()
       .then((data) => {
         setRecords(data);
+        // 合計時間の計算
+        const totalTime = data.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.time), 0);
+        setTotalTime(totalTime);
       })
       .catch(() => {
         showMessage({ title: '一覧の取得に失敗しました', type: 'error' });
@@ -66,19 +87,36 @@ function App() {
 
   const onSubmit = handleSubmit((data: Record) => {
     setIsCreating(true);
-    insertRecord(data)
-      .then(() => {
-        showMessage({ title: '学習記録の登録が完了しました', type: 'success' });
-      })
-      .catch(() => {
-        showMessage({ title: '学習記録の登録に失敗しました', type: 'error' });
-      })
-      .finally(() => {
-        setIsCreating(false);
-        reset(); // 登録フォームの初期化
-        setOpen(false);
-        getAllRecords();
-      });
+
+    if (isEditMode) {
+      updateRecord(data)
+        .then(() => {
+          showMessage({ title: '学習記録の更新が完了しました', type: 'success' });
+        })
+        .catch(() => {
+          showMessage({ title: '学習記録の更新に失敗しました', type: 'error' });
+        })
+        .finally(() => {
+          setIsCreating(false);
+          reset(); // 編集フォームの初期化
+          setOpen(false);
+          getAllRecords();
+        });
+    } else {
+      insertRecord(data)
+        .then(() => {
+          showMessage({ title: '学習記録の登録が完了しました', type: 'success' });
+        })
+        .catch(() => {
+          showMessage({ title: '学習記録の登録に失敗しました', type: 'error' });
+        })
+        .finally(() => {
+          setIsCreating(false);
+          reset(); // 登録フォームの初期化
+          setOpen(false);
+          getAllRecords();
+        });
+    }
   });
 
   const onClickDeleteConfirm = (id: string) => {
@@ -123,12 +161,12 @@ function App() {
               学習記録アプリ
             </Heading>
             <IconButton
-              aria-label="Search database"
+              aria-label="Open create modal"
               variant="ghost"
               size="lg"
               color="white"
               _hover={{ bg: 'teal.500', color: 'gray.200' }}
-              onClick={onClickOpenModal}
+              onClick={() => onClickOpenModal(false)}
               data-testid="create-button"
             >
               <FiPlusCircle />
@@ -146,30 +184,42 @@ function App() {
           <Table.Root size="md" variant="line" my={10} interactive data-testid="study-record-list">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>タイトル</Table.ColumnHeader>
-                <Table.ColumnHeader>時間</Table.ColumnHeader>
+                <Table.ColumnHeader width="40%">学習内容</Table.ColumnHeader>
+                <Table.ColumnHeader width="40%">学習時間</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {records.map((record) => (
                 <Table.Row key={record.id}>
-                  <Table.Cell>{record.title}</Table.Cell>
-                  <Table.Cell>{record.time}</Table.Cell>
+                  <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
+                  <Table.Cell data-testid="record-time">{record.time}</Table.Cell>
                   <Table.Cell textAlign="end">
-                    <Button colorPalette="blue" variant="outline" mr="4">
+                    <Button
+                      colorPalette="blue"
+                      variant="outline"
+                      mr="4"
+                      onClick={() => onClickOpenModal(true, record.id)}
+                      aria-label="open edit modal"
+                      data-testid="edit-button"
+                    >
                       <MdEdit />
-                      編集
                     </Button>
-                    <Button colorPalette="red" variant="outline" onClick={() => onClickDeleteConfirm(record.id)}>
+                    <Button
+                      colorPalette="red"
+                      variant="outline"
+                      onClick={() => onClickDeleteConfirm(record.id)}
+                      aria-label="Open delete confirm modal"
+                      data-testid="delete-button"
+                    >
                       <MdDeleteOutline />
-                      削除
                     </Button>
                   </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
           </Table.Root>
+          <Box data-testid="total-time">合計時間：{totalTime} / 1000 (h)</Box>
         </Container>
       )}
 
@@ -177,7 +227,7 @@ function App() {
         <DialogContent>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>新規登録</DialogTitle>
+            <DialogTitle>{isEditMode ? '記録編集' : '新規登録'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={onSubmit}>
             <DialogBody>
@@ -207,16 +257,17 @@ function App() {
                     )}
                   />
                 </Field>
+                <input type="hidden" name="id" />
               </Stack>
             </DialogBody>
             <DialogFooter mb="2">
               <DialogActionTrigger asChild>
-                <Button variant="outline" data-testid="create-cancel-button">
+                <Button variant="outline" aria-label="Cancel" data-testid="create-cancel-button">
                   キャンセル
                 </Button>
               </DialogActionTrigger>
-              <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="create-submit-button">
-                登録
+              <Button colorPalette="teal" loading={isCreating} type="submit" aria-label="Submit" data-testid="submit-button">
+                {isEditMode ? '保存' : '登録'}
               </Button>
             </DialogFooter>
           </form>
@@ -240,9 +291,11 @@ function App() {
           </DialogBody>
           <DialogFooter mb="2">
             <DialogActionTrigger asChild>
-              <Button variant="outline">キャンセル</Button>
+              <Button variant="outline" aria-label="Cancel delete">
+                キャンセル
+              </Button>
             </DialogActionTrigger>
-            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete} data-testid="delete-submit-button">
+            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete} aria-label="Submit Delete" data-testid="delete-submit-button">
               削除
             </Button>
           </DialogFooter>
