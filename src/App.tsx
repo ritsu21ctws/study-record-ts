@@ -193,13 +193,14 @@ function App() {
               {records.map((record) => (
                 <Table.Row key={record.id}>
                   <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
-                  <Table.Cell data-testid="record-time">{record.time}</Table.Cell>
+                  <Table.Cell data-testid="record-time">{`${record.time} 時間`}</Table.Cell>
                   <Table.Cell textAlign="end">
                     <HStack justifyContent="right">
                       <Button
                         colorPalette="blue"
                         variant="outline"
-                        mr="4"
+                        mr={{ md: 4, base: 0 }}
+                        size={{ md: 'md', base: 'sm' }}
                         onClick={() => onClickOpenModal(true, record.id)}
                         aria-label="open edit modal"
                         data-testid="edit-button"
@@ -209,6 +210,7 @@ function App() {
                       <Button
                         colorPalette="red"
                         variant="outline"
+                        size={{ md: 'md', base: 'sm' }}
                         onClick={() => onClickDeleteConfirm(record.id)}
                         aria-label="Open delete confirm modal"
                         data-testid="delete-button"
