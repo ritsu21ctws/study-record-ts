@@ -16,10 +16,10 @@ describe('App', () => {
   const mockFetchAllRecords = jest
     .fn()
     .mockResolvedValue([
-      new Record('1', 'Sample Record 1', '2024-12-30T12:00:00Z'),
-      new Record('2', 'Sample Record 2', '2024-12-30T14:30:00Z'),
-      new Record('3', 'Sample Record 3', '2024-12-30T16:45:00Z'),
-      new Record('4', 'Sample Record 4', '2024-12-31T08:00:00Z'),
+      new Record('1', 'Sample Record 1', '10'),
+      new Record('2', 'Sample Record 2', '20'),
+      new Record('3', 'Sample Record 3', '30'),
+      new Record('4', 'Sample Record 4', '40'),
     ]);
 
   const mockInsertRecord = jest.fn(() => Promise.resolve());
@@ -139,17 +139,17 @@ describe('データ登録', () => {
   const mockFetchAllRecords = jest
     .fn()
     .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '2024-12-30T12:00:00Z'),
-      new Record('2', 'Sample Record 2', '2024-12-30T14:30:00Z'),
-      new Record('3', 'Sample Record 3', '2024-12-30T16:45:00Z'),
-      new Record('4', 'Sample Record 4', '2024-12-31T08:00:00Z'),
+      new Record('1', 'Sample Record 1', '10'),
+      new Record('2', 'Sample Record 2', '20'),
+      new Record('3', 'Sample Record 3', '30'),
+      new Record('4', 'Sample Record 4', '40'),
     ])
     .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '2024-12-30T12:00:00Z'),
-      new Record('2', 'Sample Record 2', '2024-12-30T14:30:00Z'),
-      new Record('3', 'Sample Record 3', '2024-12-30T16:45:00Z'),
-      new Record('4', 'Sample Record 4', '2024-12-31T08:00:00Z'),
-      new Record('5', 'Sample Record 5', '2024-12-31T10:15:00Z'),
+      new Record('1', 'Sample Record 1', '10'),
+      new Record('2', 'Sample Record 2', '20'),
+      new Record('3', 'Sample Record 3', '30'),
+      new Record('4', 'Sample Record 4', '40'),
+      new Record('4', 'Sample Record 4', '50'),
     ]);
 
   const mockInsertRecord = jest.fn(() => Promise.resolve());
@@ -194,17 +194,17 @@ describe('データ削除', () => {
   const mockFetchAllRecords = jest
     .fn()
     .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '2024-12-30T12:00:00Z'),
-      new Record('2', 'Sample Record 2', '2024-12-30T14:30:00Z'),
-      new Record('3', 'Sample Record 3', '2024-12-30T16:45:00Z'),
-      new Record('4', 'Sample Record 4', '2024-12-31T08:00:00Z'),
-      new Record('5', 'Sample Record 5', '2024-12-31T10:15:00Z'),
+      new Record('1', 'Sample Record 1', '10'),
+      new Record('2', 'Sample Record 2', '20'),
+      new Record('3', 'Sample Record 3', '30'),
+      new Record('4', 'Sample Record 4', '40'),
+      new Record('5', 'Sample Record 5', '50'),
     ])
     .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '2024-12-30T12:00:00Z'),
-      new Record('2', 'Sample Record 2', '2024-12-30T14:30:00Z'),
-      new Record('3', 'Sample Record 3', '2024-12-30T16:45:00Z'),
-      new Record('4', 'Sample Record 4', '2024-12-31T08:00:00Z'),
+      new Record('1', 'Sample Record 1', '10'),
+      new Record('2', 'Sample Record 2', '20'),
+      new Record('3', 'Sample Record 3', '30'),
+      new Record('4', 'Sample Record 4', '40'),
     ]);
 
   const mockInsertRecord = jest.fn(() => Promise.resolve());
