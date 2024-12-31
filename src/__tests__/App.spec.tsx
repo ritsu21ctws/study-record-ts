@@ -65,7 +65,7 @@ describe('App', () => {
     const beforeLists = await screen.findAllByRole('row');
 
     await userEvent.click(screen.getByTestId('create-button'));
-    await userEvent.click(screen.getByTestId('create-submit-button'));
+    await userEvent.click(screen.getByTestId('submit-button'));
 
     await waitFor(() => {
       const errorMessage = screen.getByText('内容の入力は必須です');
@@ -86,7 +86,7 @@ describe('App', () => {
     await userEvent.click(screen.getByTestId('create-button'));
     await userEvent.type(screen.getByTestId('input-title'), 'テスト記録');
     await userEvent.clear(screen.getByTestId('input-time'));
-    await userEvent.click(screen.getByTestId('create-submit-button'));
+    await userEvent.click(screen.getByTestId('submit-button'));
 
     await waitFor(() => {
       const errorMessage = screen.getByText('時間の入力は必須です');
@@ -111,7 +111,7 @@ describe('App', () => {
     await userEvent.clear(timeInput);
     await userEvent.type(timeInput, '-1');
 
-    await userEvent.click(screen.getByTestId('create-submit-button'));
+    await userEvent.click(screen.getByTestId('submit-button'));
 
     await waitFor(() => {
       const errorMessage = screen.getByText('時間は0以上である必要があります');
@@ -170,7 +170,7 @@ describe('データ登録', () => {
     await userEvent.click(screen.getByTestId('create-button'));
     await userEvent.type(screen.getByTestId('input-title'), 'テスト記録');
     await userEvent.type(screen.getByTestId('input-time'), '10');
-    await userEvent.click(screen.getByTestId('create-submit-button'));
+    await userEvent.click(screen.getByTestId('submit-button'));
 
     await waitFor(
       () => {
