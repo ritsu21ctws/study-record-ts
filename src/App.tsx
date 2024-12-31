@@ -27,6 +27,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [open, setOpen] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const { showMessage } = useMessage();
@@ -35,6 +36,7 @@ function App() {
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<Record>({
     defaultValues: {
       title: '',
@@ -46,7 +48,20 @@ function App() {
     getAllRecords();
   }, []);
 
-  const onClickOpenModal = () => {
+  const onClickOpenModal = (isEdit: boolean, id?: string) => {
+    reset(); // 登録・編集フォームの初期化（発生していたバリデーションメッセージなどをクリア）
+
+    if (isEdit) {
+      const record = records.find((record) => record.id === id);
+      if (!record) {
+        showMessage({ title: '編集対象のデータが見つかりません', type: 'error' });
+        return;
+      }
+      setValue('title', record.title);
+      setValue('time', record.time);
+    }
+
+    setIsEdit(isEdit);
     setOpen(true);
   };
 
@@ -128,7 +143,7 @@ function App() {
               size="lg"
               color="white"
               _hover={{ bg: 'teal.500', color: 'gray.200' }}
-              onClick={onClickOpenModal}
+              onClick={() => onClickOpenModal(false)}
               data-testid="create-button"
             >
               <FiPlusCircle />
@@ -157,7 +172,7 @@ function App() {
                   <Table.Cell>{record.title}</Table.Cell>
                   <Table.Cell>{record.time}</Table.Cell>
                   <Table.Cell textAlign="end">
-                    <Button colorPalette="blue" variant="outline" mr="4">
+                    <Button colorPalette="blue" variant="outline" mr="4" onClick={() => onClickOpenModal(true, record.id)}>
                       <MdEdit />
                       編集
                     </Button>
@@ -177,7 +192,7 @@ function App() {
         <DialogContent>
           <DialogCloseTrigger />
           <DialogHeader>
-            <DialogTitle>新規登録</DialogTitle>
+            <DialogTitle>{isEdit ? '記録編集' : '新規登録'}</DialogTitle>
           </DialogHeader>
           <form onSubmit={onSubmit}>
             <DialogBody>
@@ -215,9 +230,16 @@ function App() {
                   キャンセル
                 </Button>
               </DialogActionTrigger>
-              <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="create-submit-button">
-                登録
-              </Button>
+
+              {isEdit ? (
+                <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="edit-submit-button">
+                  保存
+                </Button>
+              ) : (
+                <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="create-submit-button">
+                  登録
+                </Button>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>
