@@ -195,7 +195,7 @@ function App() {
                   <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
                   <Table.Cell data-testid="record-time">{record.time}</Table.Cell>
                   <Table.Cell textAlign="end">
-                    <Button colorPalette="blue" variant="outline" mr="4" onClick={() => onClickOpenModal(true, record.id)}>
+                    <Button colorPalette="blue" variant="outline" mr="4" onClick={() => onClickOpenModal(true, record.id)} data-testid="edit-button">
                       <MdEdit />
                       編集
                     </Button>
