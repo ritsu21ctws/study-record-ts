@@ -161,7 +161,7 @@ function App() {
               学習記録アプリ
             </Heading>
             <IconButton
-              aria-label="open create modal"
+              aria-label="Open create modal"
               variant="ghost"
               size="lg"
               color="white"
@@ -195,10 +195,22 @@ function App() {
                   <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
                   <Table.Cell data-testid="record-time">{record.time}</Table.Cell>
                   <Table.Cell textAlign="end">
-                    <Button colorPalette="blue" variant="outline" mr="4" onClick={() => onClickOpenModal(true, record.id)} data-testid="edit-button">
+                    <Button
+                      colorPalette="blue"
+                      variant="outline"
+                      mr="4"
+                      onClick={() => onClickOpenModal(true, record.id)}
+                      aria-label="open edit modal"
+                      data-testid="edit-button"
+                    >
                       <MdEdit />
                     </Button>
-                    <Button colorPalette="red" variant="outline" onClick={() => onClickDeleteConfirm(record.id)}>
+                    <Button
+                      colorPalette="red"
+                      variant="outline"
+                      onClick={() => onClickDeleteConfirm(record.id)}
+                      aria-label="Open delete confirm modal"
+                    >
                       <MdDeleteOutline />
                     </Button>
                   </Table.Cell>
@@ -249,11 +261,11 @@ function App() {
             </DialogBody>
             <DialogFooter mb="2">
               <DialogActionTrigger asChild>
-                <Button variant="outline" data-testid="create-cancel-button">
+                <Button variant="outline" aria-label="Cancel" data-testid="create-cancel-button">
                   キャンセル
                 </Button>
               </DialogActionTrigger>
-              <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="submit-button">
+              <Button colorPalette="teal" loading={isCreating} type="submit" aria-label="Submit" data-testid="submit-button">
                 {isEditMode ? '保存' : '登録'}
               </Button>
             </DialogFooter>
@@ -278,9 +290,11 @@ function App() {
           </DialogBody>
           <DialogFooter mb="2">
             <DialogActionTrigger asChild>
-              <Button variant="outline">キャンセル</Button>
+              <Button variant="outline" aria-label="Cancel delete">
+                キャンセル
+              </Button>
             </DialogActionTrigger>
-            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete} data-testid="delete-submit-button">
+            <Button colorPalette="red" loading={isDeleting} onClick={onClickDelete} aria-label="Submit Delete" data-testid="delete-submit-button">
               削除
             </Button>
           </DialogFooter>
