@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { MdEdit, MdDeleteOutline } from 'react-icons/md';
 import { FiPlusCircle } from 'react-icons/fi';
-import { Box, Center, Container, Flex, Heading, IconButton, Input, Spinner, Stack, Table } from '@chakra-ui/react';
+import { Box, Center, Container, Flex, Heading, HStack, IconButton, Input, Spinner, Stack, Table } from '@chakra-ui/react';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { NumberInputField, NumberInputRoot } from '@/components/ui/number-input';
@@ -181,11 +181,11 @@ function App() {
         </Center>
       ) : (
         <Container maxW="6xl">
-          <Table.Root size="md" variant="line" my={10} interactive data-testid="study-record-list">
+          <Table.Root size={{ md: 'md', base: 'sm' }} variant="line" my={{ md: 10, base: 5 }} interactive data-testid="study-record-list">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader width="40%">学習内容</Table.ColumnHeader>
-                <Table.ColumnHeader width="40%">学習時間</Table.ColumnHeader>
+                <Table.ColumnHeader>学習内容</Table.ColumnHeader>
+                <Table.ColumnHeader>学習時間</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -195,25 +195,27 @@ function App() {
                   <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
                   <Table.Cell data-testid="record-time">{record.time}</Table.Cell>
                   <Table.Cell textAlign="end">
-                    <Button
-                      colorPalette="blue"
-                      variant="outline"
-                      mr="4"
-                      onClick={() => onClickOpenModal(true, record.id)}
-                      aria-label="open edit modal"
-                      data-testid="edit-button"
-                    >
-                      <MdEdit />
-                    </Button>
-                    <Button
-                      colorPalette="red"
-                      variant="outline"
-                      onClick={() => onClickDeleteConfirm(record.id)}
-                      aria-label="Open delete confirm modal"
-                      data-testid="delete-button"
-                    >
-                      <MdDeleteOutline />
-                    </Button>
+                    <HStack justifyContent="right">
+                      <Button
+                        colorPalette="blue"
+                        variant="outline"
+                        mr="4"
+                        onClick={() => onClickOpenModal(true, record.id)}
+                        aria-label="open edit modal"
+                        data-testid="edit-button"
+                      >
+                        <MdEdit />
+                      </Button>
+                      <Button
+                        colorPalette="red"
+                        variant="outline"
+                        onClick={() => onClickDeleteConfirm(record.id)}
+                        aria-label="Open delete confirm modal"
+                        data-testid="delete-button"
+                      >
+                        <MdDeleteOutline />
+                      </Button>
+                    </HStack>
                   </Table.Cell>
                 </Table.Row>
               ))}
