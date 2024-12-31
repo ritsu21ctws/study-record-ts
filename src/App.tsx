@@ -210,6 +210,7 @@ function App() {
                       variant="outline"
                       onClick={() => onClickDeleteConfirm(record.id)}
                       aria-label="Open delete confirm modal"
+                      data-testid="delete-button"
                     >
                       <MdDeleteOutline />
                     </Button>

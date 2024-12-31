@@ -302,7 +302,7 @@ describe('データ削除', () => {
   test('学習記録の削除ができること', async () => {
     const beforeLists = await screen.findAllByRole('row');
 
-    await userEvent.click(screen.getAllByRole('button', { name: '削除' })[beforeLists.length - 2]);
+    await userEvent.click(screen.getAllByTestId('delete-button')[beforeLists.length - 2]);
     await userEvent.click(screen.getByTestId('delete-submit-button'));
 
     await waitFor(
