@@ -192,8 +192,8 @@ function App() {
             <Table.Body>
               {records.map((record) => (
                 <Table.Row key={record.id}>
-                  <Table.Cell>{record.title}</Table.Cell>
-                  <Table.Cell>{record.time}</Table.Cell>
+                  <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
+                  <Table.Cell data-testid="record-time">{record.time}</Table.Cell>
                   <Table.Cell textAlign="end">
                     <Button colorPalette="blue" variant="outline" mr="4" onClick={() => onClickOpenModal(true, record.id)}>
                       <MdEdit />
@@ -208,7 +208,7 @@ function App() {
               ))}
             </Table.Body>
           </Table.Root>
-          <Box>合計時間：{totalTime} / 1000 (h)</Box>
+          <Box data-testid="total-time">合計時間：{totalTime} / 1000 (h)</Box>
         </Container>
       )}
 

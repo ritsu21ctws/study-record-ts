@@ -4,8 +4,32 @@ import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import userEvent from '@testing-library/user-event';
 import { Record } from '@/domain/record';
 
+const mockFetchAllRecords = jest.fn();
+const mockInsertRecord = jest.fn();
+const mockDeleteRecord = jest.fn();
+
+jest.mock('@/utils/supabaseFunctions', () => {
+  return {
+    fetchAllRecords: () => mockFetchAllRecords(),
+    insertRecord: () => mockInsertRecord(),
+    deleteRecord: () => mockDeleteRecord(),
+  };
+});
+
 describe('App', () => {
   beforeEach(() => {
+    // @ts-ignore
+    globalThis.IS_REACT_ACT_ENVIRONMENT = false;
+
+    mockFetchAllRecords.mockResolvedValue([
+      new Record('1', 'Sample Record 1', '10'),
+      new Record('2', 'Sample Record 2', '20'),
+      new Record('3', 'Sample Record 3', '30'),
+      new Record('4', 'Sample Record 4', '40'),
+    ]);
+    mockInsertRecord.mockResolvedValue(Promise.resolve());
+    mockDeleteRecord.mockResolvedValue(Promise.resolve());
+
     render(
       <ChakraProvider value={defaultSystem}>
         <App />
@@ -13,28 +37,7 @@ describe('App', () => {
     );
   });
 
-  const mockFetchAllRecords = jest
-    .fn()
-    .mockResolvedValue([
-      new Record('1', 'Sample Record 1', '10'),
-      new Record('2', 'Sample Record 2', '20'),
-      new Record('3', 'Sample Record 3', '30'),
-      new Record('4', 'Sample Record 4', '40'),
-    ]);
-
-  const mockInsertRecord = jest.fn(() => Promise.resolve());
-
-  const mockDeleteRecord = jest.fn(() => Promise.resolve());
-
-  jest.mock('@/utils/supabaseFunctions', () => {
-    return {
-      fetchAllRecords: () => mockFetchAllRecords(),
-      insertRecord: () => mockInsertRecord(),
-      deleteRecord: () => mockDeleteRecord(),
-    };
-  });
-
-  test('ローディング画面が表示されること', async () => {
+  test('ローディング画面が表示されること', () => {
     const loading = screen.getByTestId('loading');
     expect(loading).toBeInTheDocument();
   });
@@ -42,6 +45,14 @@ describe('App', () => {
   test('学習記録一覧のテーブルが表示されること', async () => {
     const studyRecordList = await screen.findByTestId('study-record-list');
     expect(studyRecordList).toBeInTheDocument();
+
+    const titles = screen.getAllByTestId('record-title');
+    const times = screen.getAllByTestId('record-time');
+    const totalTime = screen.getByTestId('total-time');
+
+    expect(titles[titles.length - 1]).toHaveTextContent('Sample Record 4');
+    expect(times[times.length - 1]).toHaveTextContent('40');
+    expect(totalTime).toHaveTextContent('合計時間：100 / 1000 (h)');
   });
 
   test('新規登録ボタンが表示されること', async () => {
@@ -129,39 +140,28 @@ describe('App', () => {
 
 describe('データ登録', () => {
   beforeEach(() => {
+    mockFetchAllRecords
+      .mockResolvedValueOnce([
+        new Record('1', 'Sample Record 1', '10'),
+        new Record('2', 'Sample Record 2', '20'),
+        new Record('3', 'Sample Record 3', '30'),
+        new Record('4', 'Sample Record 4', '40'),
+      ])
+      .mockResolvedValueOnce([
+        new Record('1', 'Sample Record 1', '10'),
+        new Record('2', 'Sample Record 2', '20'),
+        new Record('3', 'Sample Record 3', '30'),
+        new Record('4', 'Sample Record 4', '40'),
+        new Record('5', 'Sample Record 5', '50'),
+      ]);
+    mockInsertRecord.mockResolvedValue(Promise.resolve());
+    mockDeleteRecord.mockResolvedValue(Promise.resolve());
+
     render(
       <ChakraProvider value={defaultSystem}>
         <App />
       </ChakraProvider>
     );
-  });
-
-  const mockFetchAllRecords = jest
-    .fn()
-    .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '10'),
-      new Record('2', 'Sample Record 2', '20'),
-      new Record('3', 'Sample Record 3', '30'),
-      new Record('4', 'Sample Record 4', '40'),
-    ])
-    .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '10'),
-      new Record('2', 'Sample Record 2', '20'),
-      new Record('3', 'Sample Record 3', '30'),
-      new Record('4', 'Sample Record 4', '40'),
-      new Record('4', 'Sample Record 4', '50'),
-    ]);
-
-  const mockInsertRecord = jest.fn(() => Promise.resolve());
-
-  const mockDeleteRecord = jest.fn(() => Promise.resolve());
-
-  jest.mock('@/utils/supabaseFunctions', () => {
-    return {
-      fetchAllRecords: () => mockFetchAllRecords(),
-      insertRecord: () => mockInsertRecord(),
-      deleteRecord: () => mockDeleteRecord(),
-    };
   });
 
   test('学習記録の登録ができること', async () => {
@@ -176,6 +176,14 @@ describe('データ登録', () => {
       () => {
         const afterLists = screen.getAllByRole('row');
         expect(afterLists).toHaveLength(beforeLists.length + 1);
+
+        const lastTitle = screen.getAllByTestId('record-title')[afterLists.length - 2];
+        const lastTime = screen.getAllByTestId('record-time')[afterLists.length - 2];
+        const totalTime = screen.getByTestId('total-time');
+
+        expect(lastTitle).toHaveTextContent('Sample Record 5');
+        expect(lastTime).toHaveTextContent('50');
+        expect(totalTime).toHaveTextContent('合計時間：150 / 1000 (h)');
       },
       { timeout: 2000 }
     );
@@ -184,39 +192,26 @@ describe('データ登録', () => {
 
 describe('データ削除', () => {
   beforeEach(() => {
+    mockFetchAllRecords
+      .mockResolvedValueOnce([
+        new Record('1', 'Sample Record 1', '10'),
+        new Record('2', 'Sample Record 2', '20'),
+        new Record('3', 'Sample Record 3', '30'),
+        new Record('4', 'Sample Record 4', '40'),
+      ])
+      .mockResolvedValueOnce([
+        new Record('1', 'Sample Record 1', '10'),
+        new Record('2', 'Sample Record 2', '20'),
+        new Record('3', 'Sample Record 3', '30'),
+      ]);
+    mockInsertRecord.mockResolvedValue(Promise.resolve());
+    mockDeleteRecord.mockResolvedValue(Promise.resolve());
+
     render(
       <ChakraProvider value={defaultSystem}>
         <App />
       </ChakraProvider>
     );
-  });
-
-  const mockFetchAllRecords = jest
-    .fn()
-    .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '10'),
-      new Record('2', 'Sample Record 2', '20'),
-      new Record('3', 'Sample Record 3', '30'),
-      new Record('4', 'Sample Record 4', '40'),
-      new Record('5', 'Sample Record 5', '50'),
-    ])
-    .mockResolvedValueOnce([
-      new Record('1', 'Sample Record 1', '10'),
-      new Record('2', 'Sample Record 2', '20'),
-      new Record('3', 'Sample Record 3', '30'),
-      new Record('4', 'Sample Record 4', '40'),
-    ]);
-
-  const mockInsertRecord = jest.fn(() => Promise.resolve());
-
-  const mockDeleteRecord = jest.fn(() => Promise.resolve());
-
-  jest.mock('@/utils/supabaseFunctions', () => {
-    return {
-      fetchAllRecords: () => mockFetchAllRecords(),
-      insertRecord: () => mockInsertRecord(),
-      deleteRecord: () => mockDeleteRecord(),
-    };
   });
 
   test('学習記録の削除ができること', async () => {
@@ -229,6 +224,14 @@ describe('データ削除', () => {
       () => {
         const afterLists = screen.getAllByRole('row');
         expect(afterLists).toHaveLength(beforeLists.length - 1);
+
+        const lastTitle = screen.getAllByTestId('record-title')[afterLists.length - 2];
+        const lastTime = screen.getAllByTestId('record-time')[afterLists.length - 2];
+        const totalTime = screen.getByTestId('total-time');
+
+        expect(lastTitle).toHaveTextContent('Sample Record 3');
+        expect(lastTime).toHaveTextContent('30');
+        expect(totalTime).toHaveTextContent('合計時間：60 / 1000 (h)');
       },
       { timeout: 2000 }
     );
