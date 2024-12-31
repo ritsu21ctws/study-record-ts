@@ -161,7 +161,7 @@ function App() {
               学習記録アプリ
             </Heading>
             <IconButton
-              aria-label="Search database"
+              aria-label="open create modal"
               variant="ghost"
               size="lg"
               color="white"
@@ -184,8 +184,8 @@ function App() {
           <Table.Root size="md" variant="line" my={10} interactive data-testid="study-record-list">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>学習内容</Table.ColumnHeader>
-                <Table.ColumnHeader>学習時間</Table.ColumnHeader>
+                <Table.ColumnHeader width="40%">学習内容</Table.ColumnHeader>
+                <Table.ColumnHeader width="40%">学習時間</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -197,11 +197,9 @@ function App() {
                   <Table.Cell textAlign="end">
                     <Button colorPalette="blue" variant="outline" mr="4" onClick={() => onClickOpenModal(true, record.id)} data-testid="edit-button">
                       <MdEdit />
-                      編集
                     </Button>
                     <Button colorPalette="red" variant="outline" onClick={() => onClickDeleteConfirm(record.id)}>
                       <MdDeleteOutline />
-                      削除
                     </Button>
                   </Table.Cell>
                 </Table.Row>
@@ -255,7 +253,6 @@ function App() {
                   キャンセル
                 </Button>
               </DialogActionTrigger>
-
               <Button colorPalette="teal" loading={isCreating} type="submit" data-testid="submit-button">
                 {isEditMode ? '保存' : '登録'}
               </Button>
