@@ -83,6 +83,8 @@ https://study-record-ts-e0993.web.app/
 ├── jest.setup.ts
 ├── package-lock.json
 ├── package.json
+├── public
+│   └── vite.svg
 ├── src
 │   ├── App.tsx
 │   ├── __tests__
