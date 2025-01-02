@@ -184,8 +184,8 @@ function App() {
           <Table.Root size={{ md: 'md', base: 'sm' }} variant="line" my={{ md: 10, base: 5 }} interactive data-testid="study-record-list">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>学習内容</Table.ColumnHeader>
-                <Table.ColumnHeader>学習時間</Table.ColumnHeader>
+                <Table.ColumnHeader width="50%">学習内容</Table.ColumnHeader>
+                <Table.ColumnHeader width="45%">学習時間</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="end"></Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -193,7 +193,7 @@ function App() {
               {records.map((record) => (
                 <Table.Row key={record.id}>
                   <Table.Cell data-testid="record-title">{record.title}</Table.Cell>
-                  <Table.Cell data-testid="record-time">{`${record.time} 時間`}</Table.Cell>
+                  <Table.Cell data-testid="record-time">{`${record.time}時間`}</Table.Cell>
                   <Table.Cell textAlign="end">
                     <HStack justifyContent="right">
                       <Button
