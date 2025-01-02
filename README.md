@@ -33,7 +33,6 @@ https://study-record-ts-e0993.web.app/
 2. [環境](#環境)
 3. [ディレクトリ構成](#ディレクトリ構成)
 4. [開発環境構築](#開発環境構築)
-5. [トラブルシューティング](#トラブルシューティング)
 
 ## プロジェクトについて
 
@@ -63,7 +62,7 @@ https://study-record-ts-e0993.web.app/
 
 ## ディレクトリ構成
 
-❯ tree -a -I "node_modules" -L 2
+❯ tree -a -I "node_modules|.git|dist" -L 2
 
 ```
 .
@@ -77,10 +76,6 @@ https://study-record-ts-e0993.web.app/
 ├── Makefile
 ├── README.md
 ├── cspell.json
-├── dist
-│   ├── assets
-│   ├── index.html
-│   └── vite.svg
 ├── eslint.config.js
 ├── firebase.json
 ├── index.html
@@ -88,17 +83,13 @@ https://study-record-ts-e0993.web.app/
 ├── jest.setup.ts
 ├── package-lock.json
 ├── package.json
-├── public
-│   └── vite.svg
 ├── src
-│   ├── App.css
 │   ├── App.tsx
 │   ├── __tests__
 │   ├── assets
 │   ├── components
 │   ├── domain
 │   ├── hooks
-│   ├── index.css
 │   ├── main.tsx
 │   ├── theme
 │   ├── utils
