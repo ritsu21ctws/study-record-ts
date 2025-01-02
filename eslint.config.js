@@ -17,6 +17,13 @@ export default [
     },
   },
   {
-    ignores: ['dist/*'],
+    ignores: ['dist/*', 'src/components/ui/**.tsx'],
+  },
+  {
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
   },
 ];

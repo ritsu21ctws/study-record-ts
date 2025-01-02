@@ -18,10 +18,10 @@ jest.mock('@/utils/supabaseFunctions', () => {
   };
 });
 
+/* eslint @typescript-eslint/no-explicit-any: 0 */
 describe('App', () => {
   beforeEach(() => {
-    // @ts-ignore
-    globalThis.IS_REACT_ACT_ENVIRONMENT = false;
+    (globalThis as any).IS_REACT_ACT_ENVIRONMENT = false;
 
     mockFetchAllRecords.mockResolvedValue([
       new Record('1', 'Sample Record 1', '10'),
